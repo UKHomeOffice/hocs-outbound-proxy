@@ -2,13 +2,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hocs-outbound-proxy
+  name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+  version: {{.VERSION}}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         name: hocs-outbound-proxy
+        version: {{.VERSION}}
     spec:
       containers:
         - name: proxy
@@ -21,8 +23,8 @@ spec:
               containerPort: 3129
           resources:
             limits:
-              memory: "300Mi"
-              cpu: "2"
+              memory: "256Mi"
+              cpu: "1"
             requests:
               memory: "128Mi"
               cpu: "200m"
