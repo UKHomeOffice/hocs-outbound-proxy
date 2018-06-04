@@ -2,13 +2,18 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+  name: hocs-outbound-proxy
+  labels:
+    version: {{.VERSION}}
 spec:
-  replicas: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
   template:
     metadata:
       labels:
-        name: hocs-outbound-proxy
+        name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
         version: {{.VERSION}}
     spec:
       containers:
