@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hocs-outbound-proxy
+  name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
   labels:
-    name: hocs-outbound-proxy
-    service: hocs-outbound-proxy
+    name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+    service: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
 spec:
   ports:
     - name: http
       port: 31290
       targetPort: 3129
   selector:
-    name: hocs-outbound-proxy
+    name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
