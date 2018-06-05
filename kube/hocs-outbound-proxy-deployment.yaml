@@ -9,11 +9,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+      name: hocs-outbound-proxy
   template:
     metadata:
       labels:
-        name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+        name: hocs-outbound-proxy
         version: {{.VERSION}}
     spec:
       containers:

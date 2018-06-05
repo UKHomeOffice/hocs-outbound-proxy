@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
    matchLabels:
-     name: hocs-outbound-proxy-{{.KUBE_NAMESPACE}}
+     name: hocs-outbound-proxy
   policyTypes:
   - Ingress
   - Egress
@@ -14,10 +14,10 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          role: hocs-backend-{{.KUBE_NAMESPACE}}
+          role: hocs-backend
     - podSelector:
         matchLabels:
-          role: hocs-frontend-{{.KUBE_NAMESPACE}}
+          role: hocs-frontend
     ports:
     - port: 31290
       protocol: TCP
