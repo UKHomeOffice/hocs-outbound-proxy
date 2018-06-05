@@ -8,16 +8,20 @@ data:
     acl localnet src 10.0.0.0/8
 
     # ACL ALLOWED PORTS
-    acl SSL_ports port 443
+    acl Safe_ports port 80                 # HTTP
+    acl Safe_ports port 443                # HTTPS
+    acl SSL_ports port 443                 # HTTPS
 
-    acl notify dstdomain .notifications.service.gov.uk  # GOV.UK Notify Service
-    acl keycloak dstdomain {{.KC_URL}}                  # Development Keycloak instance
+    acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
+    acl keycloak dstdomain {{.KC_URL}} # Development Keycloak instance
 
     acl CONNECT method CONNECT
 
     # PID file location
     pid_filename /home/proxy/squid.pid
 
+    # Deny requests to all but Safe ports
+    http_access deny !Safe_ports
 
     # Deny requests to all but SSL ports
     http_access deny !SSL_ports
@@ -31,6 +35,7 @@ data:
 
     http_access deny to_localhost
 
+    http_access allow localnet
     http_access allow localnet notify
     http_access allow localnet keycloak
 
