@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
    matchLabels:
-     name: hocs-outbound-proxy
+     role: hocs-outbound-proxy
   policyTypes:
   - Ingress
   - Egress
