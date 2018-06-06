@@ -11,19 +11,21 @@ spec:
   - Ingress
   - Egress
   ingress:
-  - ports:
-    - port: 10443
-      protocol: TCP
-    from:
+  - from:
     - podSelector:
         matchLabels:
           role: hocs-frontend
     - podSelector:
         matchLabels:
           role: hocs-backend
+    ports:
+    - port: 10443
+      protocol: TCP
   egress:
   - to:
-    - namespaceSelector: {}
-  - ports:
+    - ipBlock:
+      cidr: {{.RDS_CIDR}}
+    ports:
     - port: 5432
       protocol: TCP
+
