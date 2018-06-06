@@ -11,16 +11,16 @@ spec:
   - Ingress
   - Egress
   ingress:
-    - from:
-      - podSelector:
-          matchLabels:
-            role: hocs-frontend
-      - podSelector:
-          matchLabels:
-            role: hocs-backend
-      ports:
-      - port: 31290
-        protocol: TCP
+  - from:
+    - podSelector:
+        matchLabels:
+          role: hocs-frontend
+    - podSelector:
+        matchLabels:
+          role: hocs-backend
+    ports:
+    - port: 31290
+      protocol: TCP
 
   egress:
-    - {}
+  - {}
