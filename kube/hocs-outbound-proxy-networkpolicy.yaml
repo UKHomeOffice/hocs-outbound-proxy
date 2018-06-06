@@ -13,11 +13,11 @@ spec:
   ingress:
     - from:
       - podSelector:
-        matchLabels:
-          role: hocs-frontend
+          matchLabels:
+            role: hocs-frontend
       - podSelector:
-        matchLabels:
-          role: hocs-backend
+          matchLabels:
+            role: hocs-backend
       ports:
       - port: 10443
         protocol: TCP

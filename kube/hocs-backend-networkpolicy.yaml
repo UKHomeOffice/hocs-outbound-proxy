@@ -24,7 +24,7 @@ spec:
   egress:
   - to:
     - ipBlock:
-      cidr: {{.RDS_CIDR}}
+        cidr: {{.RDS_CIDR}}
     ports:
     - port: 5432
       protocol: TCP
