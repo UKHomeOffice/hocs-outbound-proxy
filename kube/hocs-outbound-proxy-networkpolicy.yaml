@@ -19,7 +19,7 @@ spec:
           matchLabels:
             role: hocs-backend
       ports:
-      - port: 10443
+      - port: 31290
         protocol: TCP
 
   egress:
