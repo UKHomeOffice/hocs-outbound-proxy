@@ -18,9 +18,6 @@ spec:
     - podSelector:
         matchLabels:
           role: hocs-backend
-    ports:
-    - port: 31290
-      protocol: TCP
 
   egress:
   - {}
