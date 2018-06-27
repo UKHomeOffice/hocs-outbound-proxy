@@ -6,7 +6,7 @@ metadata:
   labels:
     version: {{.VERSION}}
 spec:
-  replicas: 2
+  replicas: {{.REPLICAS}}
   selector:
     matchLabels:
       name: hocs-outbound-proxy
@@ -29,10 +29,10 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "1"
+              cpu: "200m"
             requests:
               memory: "128Mi"
-              cpu: "200m"
+              cpu: "100m"
           volumeMounts:
             - name: hocs-outbound-proxy-config
               mountPath: /etc/squid
