@@ -16,6 +16,11 @@ data:
     acl keycloak dstdomain {{.KC_URL}} # Development Keycloak instance
     acl aws_sqs dstdomain sqs.eu-west-2.amazonaws.com # aws sqs
     acl aws_s3 dstdomain s3.eu-west-2.amazonaws.com # aws s3
+    acl uk_parliament dstdomain data.parliament.uk # UK Parliament
+    acl scot_parliament dstdomain data.parliament.scot # Scotish Parliament
+    acl ni_parliament dstdomain data.niassembly.gov.uk # NI Parliament
+    acl eu_parliament dstdomain europarl.europa.eu # EU Parliament
+    acl wales_parliament dstdomain senedd.assembly.wales # Welsh Assembley
 
     acl CONNECT method CONNECT
 
@@ -42,6 +47,12 @@ data:
     http_access allow localnet keycloak
     http_access allow localnet aws_sqs
     http_access allow localnet aws_s3
+    http_access allow localnet uk_parliament
+    http_access allow localnet scot_parliament
+    http_access allow localnet eu_parliament
+    http_access allow localnet ni_parliament
+
+    http_access allow localnet wales_parliament
 
     # And finally deny all other access to this proxy
     http_access deny all
