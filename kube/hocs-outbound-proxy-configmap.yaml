@@ -8,8 +8,9 @@ data:
     acl localnet src 10.0.0.0/8
 
     # ACL ALLOWED PORTS
-    acl Safe_ports port 80                 # HTTP
+    acl Safe_ports port 80                # HTTP
     acl Safe_ports port 443                # HTTPS
+    acl Safe_ports port 5432                # Postgres
     acl SSL_ports port 443                 # HTTPS
 
     acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
@@ -21,7 +22,7 @@ data:
     acl ni_parliament dstdomain data.niassembly.gov.uk # NI Parliament
     acl eu_parliament dstdomain europarl.europa.eu # EU Parliament
     acl wales_parliament dstdomain senedd.assembly.wales # Welsh Assembley
-    acl clamav dstdomain db.uk.clamav.net #Clam av database 
+    acl clamav dstdomain db.uk.clamav.net #Clam av database
 
     acl CONNECT method CONNECT
 
@@ -31,11 +32,8 @@ data:
     # Deny requests to all but Safe ports
     http_access deny !Safe_ports
 
-    # Deny requests to all but SSL ports
-    #http_access deny !SSL_ports
-
     # Deny CONNECT to other than secure SSL ports
-    #http_access deny CONNECT !SSL_ports
+    http_access deny CONNECT !Safe_ports
 
     # Only allow cachemgr access from localhost
     http_access allow manager localhost
@@ -50,9 +48,9 @@ data:
     http_access allow localnet aws_s3
     http_access allow localnet uk_parliament
     http_access allow localnet scot_parliament
+    http_access allow localnet wales_parliament
     http_access allow localnet eu_parliament
     http_access allow localnet ni_parliament
-    http_access allow localnet wales_parliament
     http_access allow localnet clamav
 
     # And finally deny all other access to this proxy
