@@ -10,21 +10,16 @@ data:
     # ACL ALLOWED PORTS
     acl Safe_ports port 80                # HTTP
     acl Safe_ports port 443                # HTTPS
-    acl SSL_ports port 443                 # HTTPS
 
     acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
     acl keycloak dstdomain {{.KC_URL}} # Development Keycloak instance
-    acl aws_sns dstdomain sns.eu-west-2.amazonaws.com # aws sns
-    acl aws_sqs dstdomain sqs.eu-west-2.amazonaws.com # aws sqs
-    acl aws_s3 dstdomain s3.eu-west-2.amazonaws.com # aws s3
-    acl aws_es dstdomain eu-west-2.es.amazonaws.com # aws elastic search
-    acl uk_parliament dstdomain data.parliament.uk # UK Parliament
-    acl scot_parliament dstdomain data.parliament.scot # Scotish Parliament
-    acl ni_parliament dstdomain data.niassembly.gov.uk # NI Parliament
-    acl eu_parliament dstdomain europarl.europa.eu # EU Parliament
-    acl wales_parliament dstdomain senedd.assembly.wales # Welsh Assembley
-    acl clamav dstdomain db.uk.clamav.net #Clam av database
-    acl clamav2 dstdomain database.clamav.net #Other Clam av database
+    acl aws dstdomain .eu-west-2.amazonaws.com # aws
+    acl uk_parliament dstdomain .parliament.uk # UK Parliament
+    acl scot_parliament dstdomain .parliament.scot # Scotish Parliament
+    acl ni_parliament dstdomain .niassembly.gov.uk # NI Parliament
+    acl eu_parliament dstdomain .europa.eu # EU Parliament
+    acl wales_parliament dstdomain .assembly.wales # Welsh Assembley
+    acl clamav dstdomain .clamav.net #Clam av database
 
     acl CONNECT method CONNECT
 
@@ -34,7 +29,7 @@ data:
     # Deny requests to all but Safe ports
     http_access deny !Safe_ports
 
-    # Deny CONNECT to other than secure SSL ports
+    # Deny CONNECT to other than secure Safe ports
     http_access deny CONNECT !Safe_ports
 
     # Only allow cachemgr access from localhost
@@ -45,17 +40,13 @@ data:
 
     http_access allow localnet notify
     http_access allow localnet keycloak
-    http_access allow localnet aws_sns
-    http_access allow localnet aws_sqs
-    http_access allow localnet aws_s3
-    http_access allow localnet aws_es
+    http_access allow localnet aws
     http_access allow localnet uk_parliament
     http_access allow localnet scot_parliament
     http_access allow localnet wales_parliament
     http_access allow localnet eu_parliament
     http_access allow localnet ni_parliament
     http_access allow localnet clamav
-    http_access allow localnet clamav2
 
     # And finally deny all other access to this proxy
     http_access deny all
