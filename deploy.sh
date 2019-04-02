@@ -9,7 +9,6 @@ fi
 if [[ ${ENVIRONMENT} == "prod" ]] ; then
     echo "deploy ${VERSION} to PROD namespace, using CS_PROD drone secret"
     export KUBE_TOKEN=${CS_PROD}
-    export KC_URL=sso.digital.homeoffice.gov.uk
     export RDS_CIDR=10.250.48.0/21
 else
     if [[ ${ENVIRONMENT} == "qa" ]] ; then
@@ -19,7 +18,6 @@ else
         echo "deploy ${VERSION} to DEV namespace, using CS_DEV drone secret"
         export KUBE_TOKEN=${CS_DEV}
     fi
-    export KC_URL=sso-dev.notprod.homeoffice.gov.uk
     export RDS_CIDR=10.250.24.0/21
 fi
 
