@@ -9,7 +9,6 @@ spec:
       role: hocs-frontend-{{.KUBE_NAMESPACE}}
   policyTypes:
   - Ingress
-  - Egress
   ingress:
   - from:
     - namespaceSelector:
