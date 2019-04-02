@@ -14,6 +14,7 @@ data:
     acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
     acl keycloak dstdomain .homeoffice.gov.uk # Home Office
     acl aws dstdomain .eu-west-2.amazonaws.com # aws
+    acl aws_es dstdomain .eu-west-2.es.amazonaws.com # aws elastic search
     acl uk_parliament dstdomain .parliament.uk # UK Parliament
     acl scot_parliament dstdomain .parliament.scot # Scotish Parliament
     acl ni_parliament dstdomain .niassembly.gov.uk # NI Parliament
@@ -41,6 +42,7 @@ data:
     http_access allow localnet notify
     http_access allow localnet keycloak
     http_access allow localnet aws
+    http_access allow localnet aws_es
     http_access allow localnet uk_parliament
     http_access allow localnet scot_parliament
     http_access allow localnet wales_parliament
