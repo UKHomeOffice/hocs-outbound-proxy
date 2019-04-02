@@ -10,7 +10,6 @@ data:
     # ACL ALLOWED PORTS
     acl Safe_ports port 80                # HTTP
     acl Safe_ports port 443                # HTTPS
-    acl Safe_ports port 5432                # Postgres
     acl SSL_ports port 443                 # HTTPS
 
     acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
@@ -43,7 +42,6 @@ data:
 
     http_access deny to_localhost
 
-    http_access allow localnet
     http_access allow localnet notify
     http_access allow localnet keycloak
     http_access allow localnet aws_sns
