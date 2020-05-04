@@ -28,11 +28,11 @@ spec:
               containerPort: 3129
           resources:
             limits:
-              memory: "256Mi"
-              cpu: "200m"
+              memory: 32Mi
+              cpu: 200m
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: 16Mi
+              cpu: 100m
           volumeMounts:
             - name: hocs-outbound-proxy-config
               mountPath: /etc/squid
