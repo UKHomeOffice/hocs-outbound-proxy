@@ -17,7 +17,6 @@ data:
     acl uk_parliament dstdomain .parliament.uk # UK Parliament
     acl scot_parliament dstdomain .parliament.scot # Scotish Parliament
     acl ni_parliament dstdomain .niassembly.gov.uk # NI Parliament
-    acl eu_parliament dstdomain .europa.eu # EU Parliament
     acl wales_parliament dstdomain .assembly.wales # Welsh Assembley
     acl clamav dstdomain .clamav.net #Clam av database
 
@@ -44,7 +43,6 @@ data:
     http_access allow localnet uk_parliament
     http_access allow localnet scot_parliament
     http_access allow localnet wales_parliament
-    http_access allow localnet eu_parliament
     http_access allow localnet ni_parliament
     http_access allow localnet clamav
 
