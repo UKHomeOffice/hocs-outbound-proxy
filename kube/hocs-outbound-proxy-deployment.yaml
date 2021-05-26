@@ -5,6 +5,8 @@ metadata:
   name: hocs-outbound-proxy
   labels:
     version: {{.VERSION}}
+  annotations:
+    downscaler/uptime: {{.OUTBOUND_PROXY_UPTIME_PERIOD}}
 spec:
   replicas: {{.REPLICAS}}
   selector:
