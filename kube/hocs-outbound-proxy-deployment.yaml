@@ -22,7 +22,6 @@ spec:
       containers:
         - name: proxy
           image: quay.io/ukhomeofficedigital/squidproxy:v0.0.5
-          imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
           ports:
@@ -30,14 +29,18 @@ spec:
               containerPort: 3129
           resources:
             limits:
-              memory: 48Mi
+              memory: 96Mi
               cpu: 600m
             requests:
-              memory: 16Mi
-              cpu: 100m
+              memory: 96Mi
+              cpu: 200m
           volumeMounts:
             - name: hocs-outbound-proxy-config
               mountPath: /etc/squid
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 20" ]
       volumes:
         - name: hocs-outbound-proxy-config
           configMap:
