@@ -18,7 +18,6 @@ data:
     acl scot_parliament dstdomain .parliament.scot # Scotish Parliament
     acl ni_parliament dstdomain .niassembly.gov.uk # NI Parliament
     acl wales_parliament dstdomain .assembly.wales # Welsh Assembley
-    acl clamav dstdomain .clamav.net #Clam av database
 
     acl CONNECT method CONNECT
 
@@ -44,7 +43,6 @@ data:
     http_access allow localnet scot_parliament
     http_access allow localnet wales_parliament
     http_access allow localnet ni_parliament
-    http_access allow localnet clamav
 
     # And finally deny all other access to this proxy
     http_access deny all
