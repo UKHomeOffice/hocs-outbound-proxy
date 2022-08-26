@@ -22,7 +22,7 @@ data:
     acl CONNECT method CONNECT
 
     # PID file location
-    pid_filename /home/proxy/squid.pid
+    pid_filename /app/squid.pid
 
     # Deny requests to all but Safe ports
     http_access deny !Safe_ports
