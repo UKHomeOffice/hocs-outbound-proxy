@@ -1,0 +1,35 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hocs-outbound-proxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: hocs-outbound-proxy
+    spec:
+      containers:
+        - name: proxy
+          image: quay.io/ukhomeofficedigital/squidproxy:v0.0.4
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+          ports:
+            - name: http
+              containerPort: 3129
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "2"
+            requests:
+              memory: "128Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: hocs-outbound-proxy-config
+              mountPath: /etc/squid
+      volumes:
+        - name: hocs-outbound-proxy-config
+          configMap:
+            name: hocs-outbound-proxy-config
