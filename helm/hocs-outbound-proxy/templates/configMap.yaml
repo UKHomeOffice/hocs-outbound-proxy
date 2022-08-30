@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hocs-outbound-proxy-config
+  name: {{ .Values.configMap.name }}
 data:
   squid.conf: |
     # Local configuration

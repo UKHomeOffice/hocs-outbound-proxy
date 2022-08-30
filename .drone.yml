@@ -1,49 +1,105 @@
-pipeline:
+---
+kind: pipeline
+type: kubernetes
+name: build
 
-  deploy-to-dev-from-build-number:
-    image: quay.io/ukhomeofficedigital/kd:v0.8.0
+steps:
+
+  - name: config cs dev
+      image: alpine/k8s
+      environment:
+        KUBE_NAMESPACE: cs-dev
+        KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+        KUBE_TOKEN:
+          from_secret: cs_dev
+      commands: |
+        kubectl config view
+        curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt \
+        --output /tmp/cluster_ca.crt
+        kubectl config set-cluster "${KUBE_NAMESPACE}" \
+        --certificate-authority="/tmp/cluster_ca.crt" \
+        --server="${KUBE_SERVER}"
+    depends_on:
+      - clone
+
+  - name: template cs dev
+    image: alpine/k8s
     environment:
-      - KUBE_NAMESPACE=cs-dev
-      - ENVIRONMENT=dev
-      - VERSION=build-${DRONE_BUILD_NUMBER}
-      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-    secrets:
-      - cs_dev
+      VERSION: build-${DRONE_BUILD_NUMBER}
+    commands: |
+      helm upgrade hocs-outbound-proxy \
+      --atomic \
+      --cleanup-on-fail \
+      --install \
+      --reset-values \
+      --timeout 5m \
+      --history-max int 3 \
+      --set version=${VERSION} --values=values-notprod.yaml
+    depends_on:
+      - config cs dev
+
+  - name: deploy to cs dev
+    image: quay.io/ukhomeofficedigital/kd
+    environment:
+      ENVIRONMENT: cs-dev
+      VERSION: build-${DRONE_BUILD_NUMBER}
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: cs_dev
     commands:
-      - cd kube-hocs
       - ./deploy.sh
     when:
-      branch: master
-      event: [push, tag]
+      branch: main
+      event:
+        - push
+        - tag
+    depends_on:
+      - template cs dev
 
-  deployment:
-    image: quay.io/ukhomeofficedigital/kd:v0.8.0
+  - name: deploy to wcs dev
+    image: quay.io/ukhomeofficedigital/kd
     environment:
-      - KUBE_NAMESPACE=cs-${DRONE_DEPLOY_TO}
-      - ENVIRONMENT=${DRONE_DEPLOY_TO}
-      - KUBE_SERVER=https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-    secrets:
-      - cs_dev
-      - cs_qa
+      ENVIRONMENT: wcs-dev
+      VERSION: build-${DRONE_BUILD_NUMBER}
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: wcs_dev
     commands:
-      - cd kube-hocs
       - ./deploy.sh
     when:
-      event: deployment
-      environment: [dev, qa]
+      branch: main
+      event:
+        - push
+        - tag
+    depends_on:
+      - clone
 
-  deploy-to-prod:
-    image: quay.io/ukhomeofficedigital/kd:v0.8.0
+  - name: deploy to not-prod
+    image: quay.io/ukhomeofficedigital/kd
     environment:
-      - KUBE_NAMESPACE=cs-prod
-      - ENVIRONMENT=prod
-      - VERSION=${IMAGE_VERSION}
-      - KUBE_SERVER=https://kube-api-prod.prod.acp.homeoffice.gov.uk
-    secrets:
-      - cs_prod
+      ENVIRONMENT: ${DRONE_DEPLOY_TO}
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: ${DRONE_DEPLOY_TO/-/_}
     commands:
-      - cd kube-hocs
       - ./deploy.sh
     when:
-      event: deployment
-      environment: prod
+      event: promote
+      target:
+        exclude:
+          - "*-prod"
+
+  - name: deploy to prod
+    image: quay.io/ukhomeofficedigital/kd
+    environment:
+      ENVIRONMENT: ${DRONE_DEPLOY_TO}
+      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: ${DRONE_DEPLOY_TO/-/_}
+    commands:
+      - ./deploy.sh
+    when:
+      target:
+        include:
+          - "*-prod"
+      event: promote

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hocs-outbound-proxy.name" . }}
+  labels:
+    service: {{ include "hocs-outbound-proxy.name" . }}
+    name: {{ include "hocs-outbound-proxy.name" . }}
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+  selector:
+    name: {{ include "hocs-outbound-proxy.name" . }}

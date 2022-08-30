@@ -1,0 +1,25 @@
+---
+nameOverride: "hocs-outbound-proxy"
+
+replicaCount: 2
+configMap:
+  name: hocs-outbound-proxy-config
+
+image:
+  repository: quay.io/ukhomeofficedigital/hocs-outbound-proxy
+  pullPolicy: IfNotPresent
+
+deploymentAnnotations:
+  downscaler/uptime: "Mon-Sun 04:55-23:05 Europe/London"
+
+service:
+  port: 31290
+  targetPort: 3129
+
+resources:
+   limits:
+     cpu: 600m
+     memory: 96Mi
+   requests:
+     cpu: 100m
+     memory: 96Mi
