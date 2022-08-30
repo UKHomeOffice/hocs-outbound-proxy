@@ -1,7 +1,7 @@
 #!/usr/bin/env ash
 
-curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${KUBE_CLUSTER}.crt \
-  --output /root/.kube/cluster_ca.crt
+wget wget -O /root/.kube/cluster_ca.crt \
+ https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${KUBE_CLUSTER}.crt
 
 kubectl config set-cluster "${KUBE_CLUSTER}" \
   --certificate-authority="/root/.kube/cluster_ca.crt" \
