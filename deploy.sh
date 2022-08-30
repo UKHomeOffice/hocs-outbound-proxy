@@ -9,12 +9,15 @@ kubectl config set-cluster "${KUBE_NAMESPACE}" \
 --certificate-authority="/tmp/cluster_ca.crt" \
 --server="${KUBE_SERVER}"
 
+ls -la
+
 helm upgrade hocs-outbound-proxy \
+ ./helm/hocs-outbound-proxy \
 --atomic \
 --cleanup-on-fail \
 --install \
 --reset-values \
 --timeout 5m \
 --history-max 3 \
+--values=values-notprod.yaml \
 --set version=${VERSION} \
---values=values-notprod.yaml
