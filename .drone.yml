@@ -12,58 +12,7 @@ steps:
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
-    commands:
-      - kubectl config view
-      - curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt \
-        --output /tmp/cluster_ca.crt
-      - kubectl config set-cluster "${KUBE_NAMESPACE}" \
-        --certificate-authority="/tmp/cluster_ca.crt" \
-        --server="${KUBE_SERVER}"
-    depends_on:
-      - clone
-
-  - name: template cs dev
-    image: alpine/k8s
-    environment:
       VERSION: build-${DRONE_BUILD_NUMBER}
-    commands:
-      - helm upgrade hocs-outbound-proxy \
-        --atomic \
-        --cleanup-on-fail \
-        --install \
-        --reset-values \
-        --timeout 5m \
-        --history-max int 3 \
-        --set version=${VERSION} --values=values-notprod.yaml
-    depends_on:
-      - config cs dev
-
-  - name: deploy to cs dev
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: cs-dev
-      VERSION: build-${DRONE_BUILD_NUMBER}
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: cs_dev
-    commands:
-      - ./deploy.sh
-    when:
-      branch: main
-      event:
-        - push
-        - tag
-    depends_on:
-      - template cs dev
-
-  - name: deploy to wcs dev
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: wcs-dev
-      VERSION: build-${DRONE_BUILD_NUMBER}
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: wcs_dev
     commands:
       - ./deploy.sh
     when:
@@ -73,18 +22,3 @@ steps:
         - tag
     depends_on:
       - clone
-
-  - name: deploy to not-prod
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: ${DRONE_DEPLOY_TO/-/_}
-    commands:
-      - ./deploy.sh
-    when:
-      event: promote
-      target:
-        exclude:
-          - "*-prod"
