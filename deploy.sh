@@ -15,6 +15,6 @@ helm upgrade hocs-outbound-proxy \
 --install \
 --reset-values \
 --timeout 5m \
---history-max int 3 \
+--history-max 3 \
 --set version=${VERSION} \
 --values=values-notprod.yaml
