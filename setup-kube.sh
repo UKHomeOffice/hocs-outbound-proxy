@@ -1,5 +1,5 @@
 #!/usr/bin/env ash
-pwd
+echo $HOME
 
 curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${KUBE_CLUSTER}.crt \
   --output /tmp/cluster_ca.crt
