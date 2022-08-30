@@ -24,7 +24,7 @@ steps:
   - name: config cs dev
     image: alpine/helm
     environment:
-      VERSION: build-${DRONE_BUILD_NUMBER}
+      VERSION: 0.0.1
     commands:
       - ./deploy.sh
     volumes:
