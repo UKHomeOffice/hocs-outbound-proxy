@@ -6,7 +6,7 @@ name: build
 steps:
 
   - name: kube config
-    image: quay.io/ukhomeofficedigital/helm
+    image: alpine/k8s
     environment:
       KUBE_CLUSTER: acp-notprod
       KUBE_NAMESPACE: cs-dev
