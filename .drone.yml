@@ -5,9 +5,23 @@ name: build
 
 steps:
 
+  - name: kube config
+    image: quay.io/ukhomeofficedigital/kd
+    environment:
+      KUBE_CLUSTER: acp-notprod
+      KUBE_NAMESPACE: cs-dev
+      KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+      KUBE_TOKEN:
+        from_secret: cs_notprod
+    commands:
+      - ./setup-kube.sh
+    depends_on:
+      - clone
+
   - name: config cs dev
     image: alpine/helm
     environment:
+      KUBE_CLUSTER: acp-notprod
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
@@ -21,4 +35,4 @@ steps:
         - push
         - tag
     depends_on:
-      - clone
+      - kube config
