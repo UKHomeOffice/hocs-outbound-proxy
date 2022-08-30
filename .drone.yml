@@ -37,3 +37,7 @@ steps:
         - tag
     depends_on:
       - kube config
+
+volumes:
+  - name: kube
+    temp: {}
