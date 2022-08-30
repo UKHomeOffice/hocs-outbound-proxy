@@ -1,6 +1,6 @@
 #!/usr/bin/env ash
 
-wget wget -O /root/.kube/cluster_ca.crt \
+wget -O /root/.kube/cluster_ca.crt \
  https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${KUBE_CLUSTER}.crt
 
 kubectl config set-cluster "${KUBE_CLUSTER}" \
