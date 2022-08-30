@@ -12,13 +12,13 @@ steps:
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
-    commands: |
-      kubectl config view
-      curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt \
-      --output /tmp/cluster_ca.crt
-      kubectl config set-cluster "${KUBE_NAMESPACE}" \
-      --certificate-authority="/tmp/cluster_ca.crt" \
-      --server="${KUBE_SERVER}"
+    commands:
+      - kubectl config view
+      - curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt \
+        --output /tmp/cluster_ca.crt
+      - kubectl config set-cluster "${KUBE_NAMESPACE}" \
+        --certificate-authority="/tmp/cluster_ca.crt" \
+        --server="${KUBE_SERVER}"
     depends_on:
       - clone
 
@@ -26,15 +26,15 @@ steps:
     image: alpine/k8s
     environment:
       VERSION: build-${DRONE_BUILD_NUMBER}
-    commands: |
-      helm upgrade hocs-outbound-proxy \
-      --atomic \
-      --cleanup-on-fail \
-      --install \
-      --reset-values \
-      --timeout 5m \
-      --history-max int 3 \
-      --set version=${VERSION} --values=values-notprod.yaml
+    commands:
+      - helm upgrade hocs-outbound-proxy \
+        --atomic \
+        --cleanup-on-fail \
+        --install \
+        --reset-values \
+        --timeout 5m \
+        --history-max int 3 \
+        --set version=${VERSION} --values=values-notprod.yaml
     depends_on:
       - config cs dev
 
@@ -88,18 +88,3 @@ steps:
       target:
         exclude:
           - "*-prod"
-
-  - name: deploy to prod
-    image: quay.io/ukhomeofficedigital/kd
-    environment:
-      ENVIRONMENT: ${DRONE_DEPLOY_TO}
-      KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
-      KUBE_TOKEN:
-        from_secret: ${DRONE_DEPLOY_TO/-/_}
-    commands:
-      - ./deploy.sh
-    when:
-      target:
-        include:
-          - "*-prod"
-      event: promote
