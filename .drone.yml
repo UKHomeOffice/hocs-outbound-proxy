@@ -11,7 +11,7 @@ steps:
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
-        from_secret: cs_dev
+        from_secret: cs_notprod
     commands: |
       kubectl config view
       curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/acp-notprod.crt \
