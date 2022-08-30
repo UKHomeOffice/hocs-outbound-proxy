@@ -1,10 +1,10 @@
 #!/usr/bin/env ash
 
 curl https://raw.githubusercontent.com/UKHomeOffice/acp-ca/master/${KUBE_CLUSTER}.crt \
-  --output /root/cluster_ca.crt
+  --output /root/.kube/cluster_ca.crt
 
 kubectl config set-cluster "${KUBE_CLUSTER}" \
-  --certificate-authority="/root/cluster_ca.crt" \
+  --certificate-authority="/root/.kube/cluster_ca.crt" \
   --server="${KUBE_SERVER}"
 
 kubectl config set-credentials helm \
