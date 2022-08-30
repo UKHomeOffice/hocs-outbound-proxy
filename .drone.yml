@@ -17,7 +17,7 @@ steps:
       - ./setup-kube.sh
     volumes:
       - name: kube
-        path: ~/.kube
+        path: /root/.kube
     depends_on:
       - clone
 
@@ -29,7 +29,7 @@ steps:
       - ./deploy.sh
     volumes:
       - name: kube
-        path: ~/.kube
+        path: /root/.kube
     when:
       branch: main
       event:
