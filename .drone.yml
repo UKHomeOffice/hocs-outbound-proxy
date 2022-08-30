@@ -6,21 +6,34 @@ name: build
 steps:
 
   - name: kube config
-    image: alpine/k8s
+    image: quay.io/ukhomeofficedigital/kd
     environment:
       KUBE_CLUSTER: acp-notprod
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
-      VERSION: 0.0.1
     commands:
       - ./setup-kube.sh
-      - ./deploy.sh
+    volumes:
+      - name: kube
+        path: ~/.kube
     depends_on:
       - clone
+
+  - name: config cs dev
+    image: alpine/helm
+    environment:
+      VERSION: build-${DRONE_BUILD_NUMBER}
+    commands:
+      - ./deploy.sh
+    volumes:
+      - name: kube
+        path: ~/.kube
     when:
       branch: main
       event:
         - push
         - tag
+    depends_on:
+      - kube config
