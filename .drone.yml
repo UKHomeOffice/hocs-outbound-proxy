@@ -13,6 +13,7 @@ steps:
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
+      VERSION: build-${DRONE_BUILD_NUMBER}
     commands:
       - ./setup-kube.sh
       - ./deploy.sh
