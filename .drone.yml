@@ -6,7 +6,7 @@ name: build
 steps:
 
   - name: config cs dev
-    image: alpine/k8s
+    image: alpine/kd
     environment:
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
