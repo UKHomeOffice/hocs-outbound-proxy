@@ -1,4 +1,5 @@
 #!/usr/bin/env ash
+pwd
 
 helm upgrade hocs-outbound-proxy \
  ./helm/hocs-outbound-proxy \
