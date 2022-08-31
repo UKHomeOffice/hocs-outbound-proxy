@@ -1,7 +1,7 @@
 #!/usr/bin/env ash
 
 helm upgrade hocs-outbound-proxy \
- ./helm/hocs-outbound-proxy \
+ ../helm/hocs-outbound-proxy \
 --atomic \
 --cleanup-on-fail \
 --install \
@@ -9,5 +9,5 @@ helm upgrade hocs-outbound-proxy \
 --timeout 3m \
 --history-max 3 \
 --namespace ${DRONE_STEP_NAME} \
---values=./helm/values-notprod.yaml \
 --set version=${VERSION} \
+${VALUES_FILE}
