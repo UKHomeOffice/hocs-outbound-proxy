@@ -9,44 +9,27 @@ trigger:
     - main
 
 steps:
-  - name: config
-    image: quay.io/ukhomeofficedigital/kd:v1.20.15
+  - &deploy
+    name: cs-dev
+    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
     environment:
       KUBE_CLUSTER: acp-notprod
+      KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
+      VALUES_FILE: '--values ./helm/values-notprod.yaml'
+      VERSION: ${DRONE_TAG}
     commands:
       - ./kube/setup-kube.sh
-    volumes:
-      - name: kube
-        path: /root/.kube
+      - ./kube/helm-deploy.sh
     depends_on:
       - clone
-
-  - &deploy
-    name: cs-dev
-    image: alpine/helm:3.9.4
-    environment:
-      KUBE_NAMESPACE: cs-dev
-      VERSION: ${DRONE_TAG}
-      VALUES_FILE: '--values ./helm/values-notprod.yaml'
-    commands:
-      - ./kube/helm-deploy.sh
-    volumes:
-      - name: kube
-        path: /root/.kube
-    depends_on:
-      - config
 
   - <<: *deploy
     name: wcs-dev
     environment:
       KUBE_NAMESPACE: wcs-dev
-
-volumes:
-  - name: kube
-    temp: {}
 
 ---
 kind: pipeline
@@ -63,66 +46,38 @@ steps:
         - git fetch --tags
         - git checkout $${VERSION}
 
-    - name: prod config
-      image: quay.io/ukhomeofficedigital/kd:v1.20.15
+    - name: prod deploy
+      image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
       environment:
         KUBE_CLUSTER: acp-prod
+        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
         KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
         KUBE_TOKEN:
           from_secret: cs_prod
       commands:
         - ./kube/setup-kube.sh
-      volumes:
-        - name: kube
-          path: /root/.kube
-      depends_on:
-        - checkout
-
-    - name: notprod config
-      image: quay.io/ukhomeofficedigital/kd:v1.20.15
-      environment:
-        KUBE_CLUSTER: acp-notprod
-        KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
-        KUBE_TOKEN:
-          from_secret: cs_notprod
-      commands:
-        - ./kube/setup-kube.sh
-      volumes:
-        - name: kube
-          path: /root/.kube
-      depends_on:
-        - checkout
-
-    - name: prod
-      image: alpine/helm:3.9.4
-      environment:
-        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
-        VERSION: ${DRONE_TAG}
-      commands:
         - ./kube/helm-deploy.sh
-      volumes:
-        - name: kube
-          path: /root/.kube
       depends_on:
-        - prod config
+        - checkout
       when:
         target:
           - '*-prod'
 
     - &deploy
-      name: notprod
-      image: alpine/helm:3.9.4
+      name: notprod deploy
+      image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
       environment:
+        KUBE_CLUSTER: acp-notprod
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
-        VERSION: ${DRONE_TAG}
+        KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+        KUBE_TOKEN:
+          from_secret: cs_notprod
         VALUES_FILE: '--values ./helm/values-notprod.yaml'
       commands:
+        - ./kube/setup-kube.sh
         - ./kube/helm-deploy.sh
-      volumes:
-        - name: kube
-          path: /root/.kube
       depends_on:
-        - notprod config
+        - checkout
       when:
         target:
           - 'cs-*'
