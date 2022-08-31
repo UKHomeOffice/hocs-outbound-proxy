@@ -88,8 +88,7 @@ steps:
         KUBE_TOKEN:
           from_secret: cs_notprod
 
-    - &deploy
-      name: prod
+    - name: prod
       image: alpine/helm:3.9.4
       environment:
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
@@ -105,10 +104,18 @@ steps:
         target:
           - '*-prod'
 
-    - <<: *deploy
+    - &deploy
       name: notprod
+      image: alpine/helm:3.9.4
       environment:
+        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
+        VERSION: ${DRONE_TAG}
         VALUES_FILE: '--values ./helm/values-notprod.yaml'
+      commands:
+        - ./kube/helm-deploy.sh
+      volumes:
+        - name: kube
+          path: /root/.kube
       depends_on:
         - notprod config
       when:
@@ -120,7 +127,6 @@ steps:
       name: wcs-qa
       environment:
         KUBE_NAMESPACE: wcs-qa
-        VALUES_FILE: '--values ./helm/values-notprod.yaml'
       depends_on:
         - notprod config
       when:
@@ -131,7 +137,6 @@ steps:
       name: cs-qa
       environment:
         KUBE_NAMESPACE: cs-qa
-        VALUES_FILE: '--values ./helm/values-notprod.yaml'
       depends_on:
         - notprod config
       when:
