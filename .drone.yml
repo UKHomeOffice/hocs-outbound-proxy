@@ -9,7 +9,6 @@ trigger:
     - main
 
 steps:
-
   - name: kube config
     image: quay.io/ukhomeofficedigital/kd
     environment:
@@ -19,6 +18,7 @@ steps:
       KUBE_TOKEN:
         from_secret: cs_notprod
     commands:
+      - cd kube
       - ./setup-kube.sh
     volumes:
       - name: kube
@@ -31,8 +31,10 @@ steps:
     image: alpine/helm
     environment:
       VERSION: "${DRONE_TAG}"
+      VALUES_FILE: --values=../helm/values-notprod.yaml
     commands:
-      - ./deploy.sh
+      - cd kube
+      - ./helm-deploy.sh
     volumes:
       - name: kube
         path: /root/.kube
