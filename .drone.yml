@@ -98,7 +98,7 @@ steps:
           - cs-prod
 
     - <<: *prod
-      name: wcs-qa
+      name: wcs-prod
       when:
         target:
           - wcs-prod
