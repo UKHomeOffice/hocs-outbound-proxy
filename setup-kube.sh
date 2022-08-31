@@ -13,6 +13,5 @@ kubectl config set-credentials helm \
 kubectl config set-context helm \
   --cluster="${KUBE_CLUSTER}" \
   --user="helm" \
-  --namespace="${KUBE_NAMESPACE}"
 
 kubectl config use-context helm
