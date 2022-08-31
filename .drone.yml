@@ -30,8 +30,8 @@ steps:
     image: alpine/helm:3.9.4
     environment:
       KUBE_NAMESPACE: ${DRONE_STEP_NAME}
-      VERSION: "${DRONE_TAG}"
-      VALUES_FILE: --values=../helm/values-notprod.yaml
+      VERSION: ${DRONE_TAG}
+      VALUES_FILE: '--values ../helm/values-notprod.yaml'
     commands:
       - cd kube
       - ./helm-deploy.sh
@@ -84,7 +84,7 @@ steps:
       name: cs-prod
       image: alpine/helm:3.9.4
       environment:
-        VERSION: "${DRONE_TAG}"
+        VERSION: ${DRONE_TAG}
       commands:
         - cd kube
         - ./helm-deploy.sh
@@ -107,8 +107,8 @@ steps:
       name: cs-qa
       image: alpine/helm:3.9.4
       environment:
-        VERSION: "${DRONE_TAG}"
-        VALUES_FILE: --values=../helm/values-notprod.yaml
+        VERSION: ${DRONE_TAG}
+        VALUES_FILE: '--values ../helm/values-notprod.yaml'
       commands:
         - cd kube
         - ./helm-deploy.sh
