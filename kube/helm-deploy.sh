@@ -8,6 +8,6 @@ helm upgrade hocs-outbound-proxy \
 --reset-values \
 --timeout 3m \
 --history-max 3 \
---namespace=${KUBE_NAMESPACE} \
+--namespace ${KUBE_NAMESPACE} \
 --set version=${VERSION} \
 ${VALUES_FILE}
