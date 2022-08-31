@@ -94,7 +94,6 @@ steps:
       environment:
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
         VERSION: ${DRONE_TAG}
-        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
       commands:
         - ./kube/helm-deploy.sh
       volumes:
