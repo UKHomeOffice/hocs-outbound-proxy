@@ -40,7 +40,7 @@ steps:
       - kube config
 
   - <<: *deploy
-    name wcs-dev
+    name: wcs-dev
 
 volumes:
   - name: kube
