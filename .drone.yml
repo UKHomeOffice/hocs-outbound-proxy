@@ -1,7 +1,12 @@
 ---
 kind: pipeline
 type: kubernetes
-name: build
+name: deploy tag
+trigger:
+  event:
+    - tag
+  branch:
+    - main
 
 steps:
 
@@ -21,22 +26,21 @@ steps:
     depends_on:
       - clone
 
-  - name: config cs dev
+  - &deploy
+    name: cs-dev
     image: alpine/helm
     environment:
-      VERSION: 0.0.1
+      VERSION: "${DRONE_TAG}"
     commands:
       - ./deploy.sh
     volumes:
       - name: kube
         path: /root/.kube
-    when:
-      branch: main
-      event:
-        - push
-        - tag
     depends_on:
       - kube config
+
+  -<<: *deploy
+    name wcs-dev
 
 volumes:
   - name: kube

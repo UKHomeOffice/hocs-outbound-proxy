@@ -8,5 +8,6 @@ helm upgrade hocs-outbound-proxy \
 --reset-values \
 --timeout 3m \
 --history-max 3 \
+--namespace ${DRONE_STEP_NAME} \
 --values=./helm/values-notprod.yaml \
 --set version=${VERSION} \
