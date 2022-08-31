@@ -17,31 +17,29 @@ steps:
       KUBE_TOKEN:
         from_secret: cs_notprod
     commands:
-      - cd kube
-      - ./setup-kube.sh
+      - ./kube/setup-kube.sh
     volumes:
       - name: kube
         path: /root/.kube
     depends_on:
       - clone
 
-  - &notprod
+  - &deploy
     name: cs-dev
     image: alpine/helm:3.9.4
     environment:
       KUBE_NAMESPACE: cs-dev
       VERSION: ${DRONE_TAG}
-      VALUES_FILE: '--values ../helm/values-notprod.yaml'
+      VALUES_FILE: '--values ./helm/values-notprod.yaml'
     commands:
-      - cd kube
-      - ./helm-deploy.sh
+      - ./kube/helm-deploy.sh
     volumes:
       - name: kube
         path: /root/.kube
     depends_on:
       - config
 
-  - <<: *notprod
+  - <<: *deploy
     name: wcs-dev
     environment:
       KUBE_NAMESPACE: wcs-dev
@@ -65,14 +63,14 @@ steps:
         - git fetch --tags
         - git checkout $${VERSION}
 
-    - name: config
+    - &config
+      name: prod config
       image: quay.io/ukhomeofficedigital/kd:v1.20.15
       environment:
-        KUBE_CLUSTER: acp-notprod
-        KUBE_NAMESPACE: cs-dev
-        KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+        KUBE_CLUSTER: acp-prod
+        KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
         KUBE_TOKEN:
-          from_secret: cs_notprod
+          from_secret: cs_prod
       commands:
         - cd kube
         - ./setup-kube.sh
@@ -82,64 +80,61 @@ steps:
       depends_on:
         - checkout
 
-    - &prod
-      name: cs-prod
+    - <<: *config
+      name: notprod config
+      environment:
+        KUBE_CLUSTER: acp-notprod
+        KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
+        KUBE_TOKEN:
+          from_secret: cs_notprod
+
+    - &deploy
+      name: prod
       image: alpine/helm:3.9.4
       environment:
+        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
         VERSION: ${DRONE_TAG}
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
       commands:
-        - cd kube
-        - ./helm-deploy.sh
+        - ./kube/helm-deploy.sh
       volumes:
         - name: kube
           path: /root/.kube
       depends_on:
-        - config
+        - prod config
       when:
         target:
-          - cs-prod
+          - '*-prod'
 
-    - <<: *prod
-      name: wcs-prod
-      when:
-        target:
-          - wcs-prod
-
-    - &notprod
-      name: cs-qa
-      image: alpine/helm:3.9.4
+    - <<: *deploy
+      name: notprod
       environment:
-        VERSION: ${DRONE_TAG}
-        VALUES_FILE: '--values ../helm/values-notprod.yaml'
-      commands:
-        - cd kube
-        - ./helm-deploy.sh
-      volumes:
-        - name: kube
-          path: /root/.kube
+        VALUES_FILE: '--values ./helm/values-notprod.yaml'
       depends_on:
-        - config
+        - notprod config
       when:
         target:
-          - release
-          - cs-qa
+          - 'cs-*'
+          - 'wcs-*'
 
-    - <<: *notprod
+    - <<: *deploy
       name: wcs-qa
+      environment:
+        KUBE_NAMESPACE: wcs-qa
+        VALUES_FILE: '--values ./helm/values-notprod.yaml'
+      depends_on:
+        - notprod config
       when:
         target:
           - release
-          - wcs-qa
 
-    - <<: *notprod
-      name: cs-demo
+    - <<: *deploy
+      name: cs-qa
+      environment:
+        KUBE_NAMESPACE: cs-qa
+        VALUES_FILE: '--values ./helm/values-notprod.yaml'
+      depends_on:
+        - notprod config
       when:
         target:
-          - cs-demo
-
-    - <<: *notprod
-      name: wcs-demo
-      when:
-        target:
-          - wcs-demo
+          - release
