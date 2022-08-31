@@ -29,7 +29,7 @@ steps:
     name: cs-dev
     image: alpine/helm:3.9.4
     environment:
-      KUBE_NAMESPACE: ${DRONE_STEP_NAME}
+      KUBE_NAMESPACE: cs-dev
       VERSION: ${DRONE_TAG}
       VALUES_FILE: '--values ../helm/values-notprod.yaml'
     commands:
@@ -43,6 +43,8 @@ steps:
 
   - <<: *notprod
     name: wcs-dev
+    environment:
+      KUBE_NAMESPACE: wcs-dev
 
 volumes:
   - name: kube
@@ -85,6 +87,7 @@ steps:
       image: alpine/helm:3.9.4
       environment:
         VERSION: ${DRONE_TAG}
+        KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
       commands:
         - cd kube
         - ./helm-deploy.sh
