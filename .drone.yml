@@ -63,8 +63,7 @@ steps:
         - git fetch --tags
         - git checkout $${VERSION}
 
-    - &config
-      name: prod config
+    - name: prod config
       image: quay.io/ukhomeofficedigital/kd:v1.20.15
       environment:
         KUBE_CLUSTER: acp-prod
@@ -72,21 +71,27 @@ steps:
         KUBE_TOKEN:
           from_secret: cs_prod
       commands:
-        - cd kube
-        - ./setup-kube.sh
+        - ./kube/setup-kube.sh
       volumes:
         - name: kube
           path: /root/.kube
       depends_on:
         - checkout
 
-    - <<: *config
-      name: notprod config
+    - name: notprod config
+      image: quay.io/ukhomeofficedigital/kd:v1.20.15
       environment:
         KUBE_CLUSTER: acp-notprod
         KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
         KUBE_TOKEN:
           from_secret: cs_notprod
+      commands:
+        - ./kube/setup-kube.sh
+      volumes:
+        - name: kube
+          path: /root/.kube
+      depends_on:
+        - checkout
 
     - name: prod
       image: alpine/helm:3.9.4
