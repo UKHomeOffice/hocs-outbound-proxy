@@ -39,7 +39,7 @@ steps:
     depends_on:
       - kube config
 
-  -<<: *deploy
+  - <<: *deploy
     name wcs-dev
 
 volumes:
