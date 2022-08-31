@@ -87,8 +87,6 @@ steps:
       name: wcs-qa
       environment:
         KUBE_NAMESPACE: wcs-qa
-      depends_on:
-        - notprod config
       when:
         target:
           - release
@@ -97,8 +95,6 @@ steps:
       name: cs-qa
       environment:
         KUBE_NAMESPACE: cs-qa
-      depends_on:
-        - notprod config
       when:
         target:
           - release
