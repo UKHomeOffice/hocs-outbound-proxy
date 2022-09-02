@@ -11,15 +11,16 @@ data:
     acl Safe_ports port 80                # HTTP
     acl Safe_ports port 443                # HTTPS
 
-    acl notify dstdomain .notifications.service.gov.uk # GOV.UK Notify Service
-    acl keycloak dstdomain .homeoffice.gov.uk # Home Office
-    acl aws dstdomain .amazonaws.com # aws
-    acl uk_parliament dstdomain .parliament.uk # UK Parliament
-    acl scot_parliament dstdomain .parliament.scot # Scottish Parliament
-    acl ni_parliament dstdomain .niassembly.gov.uk # NI Assembly
-    acl wales_parliament dstdomain .assembly.wales # Welsh Parliament
+    acl notify dstdomain .notifications.service.gov.uk
+    acl keycloak dstdomain .homeoffice.gov.uk
+    acl aws dstdomain .amazonaws.com
+    acl uk_parliament dstdomain .parliament.uk
+    acl scot_parliament dstdomain .parliament.scot
+    acl ni_parliament dstdomain .niassembly.gov.uk
+    acl wales_parliament dstdomain .assembly.wales
 
     acl CONNECT method CONNECT
+    acl hasRequest has request
 
     # PID file location
     pid_filename /app/squid.pid
@@ -60,7 +61,7 @@ data:
     logfile_rotate 0
     logformat squid {"logtime":"%tl", response_time":%tr, "src_ip":"%>a", "squid_request_status":"%Ss", "http_status_code":%>Hs, "reply_size_include_header":%<st, "http_method":"%rm", "request_url":"%ru", "request_path":"%rp", "squid":"%Sh", "dst_ip":"%<a", "content_type":"%mt"}
     cache_log stdio:/dev/stdout
-    access_log stdio:/dev/stdout
+    access_log stdio:/dev/stdout hasRequest
     cache_store_log stdio:/dev/stdout
   mime.conf: |
     # Empty file
