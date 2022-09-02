@@ -13,7 +13,7 @@ concurrency:
 jobs:
   check:
     name: 'Check For Valid Label'
-    runs-on: local-runner
+    runs-on: self-hosted
 
     steps:
       - name: Check label value
