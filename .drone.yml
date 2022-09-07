@@ -9,8 +9,9 @@ trigger:
     - main
 
 steps:
-  - name: cs-dev
-    image: quay.io/ukhomeofficedigital/helm:v3.5.4
+  - &deploy
+    name: cs-dev
+    image: quay.io/ukhomeofficedigital/helm
     environment:
       KUBE_CLUSTER_NAME: acp-notprod
       KUBE_NAMESPACE: cs-dev
@@ -24,6 +25,10 @@ steps:
     depends_on:
       - clone
 
+  - <<: *deploy
+    name: wcs-dev
+    environment:
+      KUBE_NAMESPACE: wcs-dev
 ---
 kind: pipeline
 type: kubernetes
@@ -34,13 +39,13 @@ trigger:
 
 steps:
     - name: checkout
-      image: quay.io/ukhomeofficedigital/helm:v3.5.4
+      image: alpine/git
       commands:
         - git fetch --tags
         - git checkout $${VERSION}
 
     - name: prod deploy
-      image: quay.io/ukhomeofficedigital/helm:v3.5.4
+      image: quay.io/ukhomeofficedigital/helm
       environment:
         KUBE_CLUSTER_NAME: acp-prod
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
@@ -58,7 +63,7 @@ steps:
 
     - &deploy
       name: notprod deploy
-      image: quay.io/ukhomeofficedigital/helm:v3.5.4
+      image: quay.io/ukhomeofficedigital/helm
       environment:
         KUBE_CLUSTER_NAME: acp-notprod
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}

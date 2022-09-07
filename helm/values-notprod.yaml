@@ -1,10 +1,13 @@
 ---
-replicaCount: 1
+hocs-backend-service:
+  minReplicas: 1
+  maxReplicas: 1
 
-deploymentAnnotations:
-  downscaler/uptime: "Mon-Sun 07:50-18:10 Europe/London"
+  deploymentAnnotations:
+    downscaler/uptime: "Mon-Sun 07:50-18:10 Europe/London"
 
-resources:
-   limits:
-     cpu: 200m
-     memory: 96Mi
+  app:
+    resources:
+       limits:
+         cpu: 200m
+         memory: 96Mi
