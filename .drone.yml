@@ -9,11 +9,10 @@ trigger:
     - main
 
 steps:
-  - &deploy
-    name: cs-dev
-    image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+  - name: cs-dev
+    image: quay.io/ukhomeofficedigital/helm:v3.5.4
     environment:
-      KUBE_CLUSTER: acp-notprod
+      KUBE_CLUSTER_NAME: acp-notprod
       KUBE_NAMESPACE: cs-dev
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
@@ -21,15 +20,9 @@ steps:
       VALUES_FILE: '--values ./helm/values-notprod.yaml'
       VERSION: ${DRONE_TAG}
     commands:
-      - ./kube/setup-kube.sh
-      - ./kube/helm-deploy.sh
+      - ./helm/helm-deploy.sh
     depends_on:
       - clone
-
-  - <<: *deploy
-    name: wcs-dev
-    environment:
-      KUBE_NAMESPACE: wcs-dev
 
 ---
 kind: pipeline
@@ -41,22 +34,21 @@ trigger:
 
 steps:
     - name: checkout
-      image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+      image: quay.io/ukhomeofficedigital/helm:v3.5.4
       commands:
         - git fetch --tags
         - git checkout $${VERSION}
 
     - name: prod deploy
-      image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+      image: quay.io/ukhomeofficedigital/helm:v3.5.4
       environment:
-        KUBE_CLUSTER: acp-prod
+        KUBE_CLUSTER_NAME: acp-prod
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
         KUBE_SERVER: https://kube-api-prod.prod.acp.homeoffice.gov.uk
         KUBE_TOKEN:
           from_secret: cs_prod
       commands:
-        - ./kube/setup-kube.sh
-        - ./kube/helm-deploy.sh
+        - ./helm/helm-deploy.sh
       depends_on:
         - checkout
       when:
@@ -66,17 +58,16 @@ steps:
 
     - &deploy
       name: notprod deploy
-      image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
+      image: quay.io/ukhomeofficedigital/helm:v3.5.4
       environment:
-        KUBE_CLUSTER: acp-notprod
+        KUBE_CLUSTER_NAME: acp-notprod
         KUBE_NAMESPACE: ${DRONE_DEPLOY_TO}
         KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
         KUBE_TOKEN:
           from_secret: cs_notprod
         VALUES_FILE: '--values ./helm/values-notprod.yaml'
       commands:
-        - ./kube/setup-kube.sh
-        - ./kube/helm-deploy.sh
+        - ./helm/helm-deploy.sh
       depends_on:
         - checkout
       when:
