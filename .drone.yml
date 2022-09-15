@@ -30,7 +30,8 @@ steps:
     name: wcs-dev
     environment:
       KUBE_NAMESPACE: wcs-dev
-
+    depends_on:
+      - cs-dev
 ---
 kind: pipeline
 type: kubernetes
@@ -86,17 +87,19 @@ steps:
             - '*-preprod'
 
     - <<: *deploy
-      name: wcs-qa
-      environment:
-        KUBE_NAMESPACE: wcs-qa
-      when:
-        target:
-          - release
-
-    - <<: *deploy
       name: cs-qa
       environment:
         KUBE_NAMESPACE: cs-qa
       when:
         target:
           - release
+
+    - <<: *deploy
+      name: wcs-qa
+      environment:
+        KUBE_NAMESPACE: wcs-qa
+      when:
+        target:
+          - release
+      depends_on:
+        - cs-qa
