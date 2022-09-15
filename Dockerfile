@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/hocs-base-image as builder
+FROM quay.io/ukhomeofficedigital/hocs-base-image
 
 USER 0
 
@@ -9,4 +9,4 @@ RUN apt-get update && \
 
 USER 10000
 
-CMD ["/usr/sbin/squid", "-N"]
+ENTRYPOINT exec /usr/sbin/squid -N
