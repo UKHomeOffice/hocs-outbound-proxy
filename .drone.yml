@@ -22,7 +22,8 @@ steps:
       VERSION: ${DRONE_TAG}
     commands:
       - /setup-kubeconfig.sh
-      - ./helm/helm-deploy.sh
+      - cd ./helm
+      - ./helm-deploy.sh
     depends_on:
       - clone
 
@@ -56,6 +57,7 @@ steps:
           from_secret: cs_prod
       commands:
         - /setup-kubeconfig.sh
+        - cd ./helm
         - ./helm/helm-deploy.sh
       depends_on:
         - checkout
@@ -76,6 +78,7 @@ steps:
         VALUES_FILE: '--values ./helm/values-notprod.yaml'
       commands:
         - /setup-kubeconfig.sh
+        - cd ./helm
         - ./helm/helm-deploy.sh
       depends_on:
         - checkout
