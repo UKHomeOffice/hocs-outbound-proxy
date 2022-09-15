@@ -1,6 +1,4 @@
 ---
-configMap:
-  name: hocs-outbound-proxy-config
 
 hocs-backend-service:
   nameOverride: hocs-outbound-proxy
