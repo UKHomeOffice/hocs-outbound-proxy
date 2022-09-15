@@ -21,6 +21,7 @@ hocs-backend-service:
       repository: quay.io/ukhomeofficedigital/hocs-outbound-proxy
     resources:
       limits:
+        cpu: 300m
         memory: 96Mi
       requests:
         memory: 96Mi
