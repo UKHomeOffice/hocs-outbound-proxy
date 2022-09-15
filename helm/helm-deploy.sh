@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+helm dependency update hocs-outbound-proxy
+
 helm upgrade hocs-outbound-proxy \
  ./helm/hocs-outbound-proxy \
 --atomic \
