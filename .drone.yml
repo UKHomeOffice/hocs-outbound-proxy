@@ -31,7 +31,8 @@ steps:
     name: wcs-dev
     environment:
       KUBE_NAMESPACE: wcs-dev
-
+    depends_on:
+      - cs-dev
 ---
 kind: pipeline
 type: kubernetes
