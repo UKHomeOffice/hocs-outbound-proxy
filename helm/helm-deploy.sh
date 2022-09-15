@@ -5,7 +5,7 @@ helm repo add hocs-helm-charts https://ukhomeoffice.github.io/hocs-helm-charts
 helm dependency update hocs-outbound-proxy
 
 helm upgrade hocs-outbound-proxy \
- ./hocs-outbound-proxy \
+ ./helm/hocs-outbound-proxy \
 --atomic \
 --cleanup-on-fail \
 --install \
