@@ -3,5 +3,5 @@ name: hocs-outbound-proxy
 version: 1.0.0
 dependencies:
   - name: hocs-backend-service
-    version: 1.1.1
+    version: 1.2.0
     repository: https://ukhomeoffice.github.io/hocs-helm-charts
