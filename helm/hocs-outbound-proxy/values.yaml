@@ -19,6 +19,7 @@ hocs-backend-service:
   app:
     image:
       repository: quay.io/ukhomeofficedigital/hocs-outbound-proxy
+    selectorRole: hocs-outbound-proxy
     resources:
       limits:
         cpu: 300m
