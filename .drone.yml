@@ -72,6 +72,7 @@ steps:
     when:
       target:
         - cs-qa
+        - release
 
   - name: wcs-qa
     image: quay.io/ukhomeofficedigital/hocs-helm-kubectl:1.0.0
@@ -100,6 +101,7 @@ steps:
       - checkout
     when:
       target:
+        - '*-dev'
         - '*-demo'
         - hocs-qax
 
