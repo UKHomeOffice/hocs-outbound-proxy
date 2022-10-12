@@ -3,9 +3,14 @@ hocs-generic-service:
   nameOverride: hocs-outbound-proxy
 
   deployment:
+    selectorRole: hocs-outbound-proxy
     replicas: 1
     annotations:
       downscaler/downtime: "Mon-Sun 00:00-04:50 Europe/London,Mon-Sun 23:10-24:00 Europe/London"
+    volumes:
+      - name: hocs-outbound-proxy-config
+        configMap:
+          name: hocs-outbound-proxy-config
 
   service:
     port: 31290
@@ -23,7 +28,11 @@ hocs-generic-service:
     selectorRole: hocs-outbound-proxy
     resources:
       limits:
-        cpu: 300m
+        cpu: 100m
         memory: 96Mi
       requests:
+        cpu: 100m
         memory: 96Mi
+    volumeMounts:
+      - name: hocs-outbound-proxy-config
+        mountPath: /etc/squid
