@@ -27,6 +27,10 @@ steps:
       KUBE_SERVER: https://kube-api-notprod.notprod.acp.homeoffice.gov.uk
       KUBE_TOKEN:
         from_secret: cs_notprod
+      RDS_CIDR:
+        from_secret: rds_cidr_notprod
+      AWS_ACCOUNT:
+        from_secret: aws_account_notprod
       VERSION: ${DRONE_TAG}
     commands:
       - ./ci/helm/helm-chart-deploy.sh --values ./helm/hocs-outbound-proxy.yaml
