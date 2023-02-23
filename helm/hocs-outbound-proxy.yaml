@@ -7,3 +7,7 @@ app:
   resources:
     requests:
       cpu: 50m
+
+
+rdsCIDR: {{ env "RDS_CIDR" }}
+awsAccount: {{ env "AWS_ACCOUNT" }}
